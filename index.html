@@ -9,6 +9,101 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
         rel="stylesheet">
     <style>
+        /* Section Buttons - Liquor & Food */
+        .section-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0 20px;
+            padding: 0 15px;
+        }
+
+        .section-btn {
+            flex: 1;
+            max-width: 300px;
+            padding: 18px 30px;
+            border-radius: 50px;
+            border: none;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: var(--ff-heading);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .section-btn:hover::before {
+            left: 100%;
+        }
+
+        .section-btn.liquor-btn {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: #FFD700;
+            border: 2px solid #FFD700;
+        }
+
+        .section-btn.food-btn {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: #FFFFFF;
+            border: 2px solid #FFA000;
+        }
+
+        .section-btn.active {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-btn.liquor-btn.active {
+            box-shadow: 0 10px 30px rgba(210, 105, 30, 0.4);
+        }
+
+        .section-btn.food-btn.active {
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Responsive section buttons */
+        @media (max-width: 768px) {
+            .section-buttons {
+                gap: 15px;
+                margin: 20px 0 15px;
+            }
+            
+            .section-btn {
+                padding: 14px 20px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .section-btn {
+                max-width: 100%;
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 18px;
+            }
+        }
+
         /* Tabs Navigation - Category Buttons */
         .tabs-container {
             position: relative;
@@ -1149,6 +1244,12 @@
             </div>
         </div>
 
+        <!-- Section Buttons - Liquor & Food -->
+        <div class="section-buttons">
+            <button class="section-btn liquor-btn" id="liquorSectionBtn">🍸 Liquor</button>
+            <button class="section-btn food-btn active" id="foodSectionBtn">🍽️ Food</button>
+        </div>
+
         <!-- Main Menu -->
         <main class="menu">
             <div class="menu-head">
@@ -1163,37 +1264,8 @@
                         <input id="search" placeholder="Search dishes, ingredients..." />
                     </div>
 
-                    <div class="tabs-scroll-wrapper">
-                        <div class="tabs-column">
-<button class="tab active" data-cat="all">All Items</button>
-<button class="tab" data-cat="QUICK BITES">Quick Bites</button>
-<button class="tab" data-cat="VEG SOUPS">Veg Soups</button>
-<button class="tab" data-cat="NON-VEG SOUPS">Non-Veg Soups</button>
-<button class="tab" data-cat="TANDOORI NON-VEG STARTER">Tandoori Non-Veg</button>
-<button class="tab" data-cat="Veg Main Course">Veg Main Course</button>
-<button class="tab" data-cat="Non-Veg Main Course">Non-Veg Main Course</button>
-<button class="tab" data-cat="Breads">Breads</button>
-<button class="tab" data-cat="Veg Rice">Veg Rice</button>
-<button class="tab" data-cat="लिकर / Rum">Rum</button>
-<button class="tab" data-cat="लिकर / Wine">Wine</button>
-<button class="tab" data-cat="लिकर / Beer">Beer</button>  
-                            
-                        </div>
-                        <div class="tabs-column">
-<button class="tab" data-cat="VEG STARTER">Veg Starters</button>
-<button class="tab" data-cat="CHINESE VEG STARTER">Chinese Veg</button>
-<button class="tab" data-cat="TANDOORI VEG STARTER">Tandoori Veg</button>
-<button class="tab" data-cat="NON-VEG STARTER">Non-Veg Starters</button>
-<button class="tab" data-cat="CHINESE NON-VEG STARTER">Chinese Non-Veg</button>
-<button class="tab" data-cat="Chinese Rice / Noodles">Chinese Rice / Noodles</button>
-<button class="tab" data-cat="Biryani's">Biryani's</button>
-<button class="tab" data-cat="Beverages">Beverages</button>
-<button class="tab" data-cat="लिकर / Scotch Whisky">Scotch Whisky</button>
-<button class="tab" data-cat="लिकर / Regular Whisky">Regular Whisky</button>
-<button class="tab" data-cat="लिकर / Brandy">Brandy</button>
-<button class="tab" data-cat="लिकर / Vodka">Vodka</button>
-                   
-                        </div>
+                    <div class="tabs-scroll-wrapper" id="tabsWrapper">
+                        <!-- Tabs will be dynamically populated by JavaScript -->
                     </div>
                 </div>
             </div>
@@ -1663,6 +1735,8 @@
         // Cart functionality
         let cart = [];
         let deliveryType = 'restaurant'; // Default to restaurant
+        let currentSection = 'food'; // Track current section (food or liquor)
+        
         const cartButton = document.getElementById('cartButton');
         const cartModal = document.getElementById('cartModal');
         const closeCart = document.getElementById('closeCart');
@@ -1674,6 +1748,128 @@
         const whatsappOrder = document.getElementById('whatsappOrder');
         const addAnotherItem = document.getElementById('addAnotherItem');
         const customerDetailsSummary = document.getElementById('customerDetailsSummary');
+        const tabsWrapper = document.getElementById('tabsWrapper');
+        const liquorBtn = document.getElementById('liquorSectionBtn');
+        const foodBtn = document.getElementById('foodSectionBtn');
+
+        // Category definitions
+        const liquorCategories = [
+            "लिकर / Scotch Whisky",
+            "लिकर / Regular Whisky", 
+            "लिकर / Brandy",
+            "लिकर / Vodka",
+            "लिकर / Rum",
+            "लिकर / Wine",
+            "लिकर / Beer"
+        ];
+
+        const foodCategories = [
+            "QUICK BITES",
+            "VEG SOUPS",
+            "VEG STARTER",
+            "NON-VEG SOUPS",
+            "NON-VEG STARTER",
+            "TANDOORI NON-VEG STARTER",
+            "CHINESE VEG STARTER",
+            "TANDOORI VEG STARTER",
+            "CHINESE NON-VEG STARTER",
+            "Veg Main Course",
+            "Non-Veg Main Course",
+            "Breads",
+            "Veg Rice",
+            "Chinese Rice / Noodles",
+            "Biryani's",
+            "Beverages"
+        ];
+
+        // Function to render category tabs based on section
+        function renderCategoryTabs(section) {
+            let categories = [];
+            
+            if (section === 'liquor') {
+                categories = liquorCategories;
+            } else {
+                categories = foodCategories;
+            }
+
+            // Split categories into two columns
+            const midPoint = Math.ceil(categories.length / 2);
+            const leftColumn = categories.slice(0, midPoint);
+            const rightColumn = categories.slice(midPoint);
+
+            let leftColumnHTML = '<div class="tabs-column">';
+            leftColumnHTML += '<button class="tab active" data-cat="all">All Items</button>';
+            leftColumn.forEach(cat => {
+                leftColumnHTML += `<button class="tab" data-cat="${cat}">${cat}</button>`;
+            });
+            leftColumnHTML += '</div>';
+
+            let rightColumnHTML = '<div class="tabs-column">';
+            rightColumn.forEach(cat => {
+                rightColumnHTML += `<button class="tab" data-cat="${cat}">${cat}</button>`;
+            });
+            rightColumnHTML += '</div>';
+
+            tabsWrapper.innerHTML = leftColumnHTML + rightColumnHTML;
+
+            // Re-attach event listeners to tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    filterByCategory(tab.dataset.cat);
+                });
+            });
+
+            // Show all items of the current section
+            filterBySection(section);
+        }
+
+        // Filter by section (food or liquor)
+        function filterBySection(section) {
+            let filteredItems = [];
+            
+            if (section === 'liquor') {
+                filteredItems = data.filter(item => liquorCategories.includes(item.cat));
+            } else {
+                filteredItems = data.filter(item => foodCategories.includes(item.cat));
+            }
+            
+            renderMenuItems(filteredItems);
+        }
+
+        // Filter by category within current section
+        function filterByCategory(category) {
+            let filteredItems = [];
+            
+            if (category === 'all') {
+                // Show all items in current section
+                if (currentSection === 'liquor') {
+                    filteredItems = data.filter(item => liquorCategories.includes(item.cat));
+                } else {
+                    filteredItems = data.filter(item => foodCategories.includes(item.cat));
+                }
+            } else {
+                filteredItems = data.filter(item => item.cat === category);
+            }
+            
+            renderMenuItems(filteredItems);
+        }
+
+        // Section button event listeners
+        liquorBtn.addEventListener('click', () => {
+            liquorBtn.classList.add('active');
+            foodBtn.classList.remove('active');
+            currentSection = 'liquor';
+            renderCategoryTabs('liquor');
+        });
+
+        foodBtn.addEventListener('click', () => {
+            foodBtn.classList.add('active');
+            liquorBtn.classList.remove('active');
+            currentSection = 'food';
+            renderCategoryTabs('food');
+        });
 
         // Delivery option selection
         function selectDeliveryOption(type) {
@@ -1828,7 +2024,7 @@
                 let totalAmount = 0;
 
                 cart.forEach(item => {
-                    const price = parseInt(item.price.replace('₹', ''));
+                    const price = parseInt(item.price.replace('₹', '').replace(' RS', ''));
                     const itemTotal = price * item.quantity;
                     totalAmount += itemTotal;
 
@@ -1915,31 +2111,31 @@
             if (deliveryType === 'restaurant') {
                 const tableNumber = document.getElementById('tableNumber').value.trim();
 
-                message += `**Delivery Type:** Dine-in\n`;
-                message += `**Table Number:** ${tableNumber}\n\n`;
+                message += `*Delivery Type:* Dine-in\n`;
+                message += `*Table Number:* ${tableNumber}\n\n`;
             } else {
                 const customerName = document.getElementById('customerName').value.trim();
                 const customerMobile = document.getElementById('customerMobile').value.trim();
                 const customerAddress = document.getElementById('customerAddress').value.trim();
 
-                message += `**Delivery Type:** Home Delivery\n`;
-                message += `**Name:** ${customerName}\n`;
-                message += `**Mobile:** ${customerMobile}\n`;
-                message += `**Address:** ${customerAddress}\n\n`;
+                message += `*Delivery Type:* Home Delivery\n`;
+                message += `*Name:* ${customerName}\n`;
+                message += `*Mobile:* ${customerMobile}\n`;
+                message += `*Address:* ${customerAddress}\n\n`;
             }
 
-            message += `**Order Details:**\n`;
+            message += `*Order Details:*\n`;
 
             cart.forEach(item => {
                 message += `• ${item.name} - ${item.quantity} x ${item.price}\n`;
             });
 
             const totalAmount = cart.reduce((sum, item) => {
-                const price = parseInt(item.price.replace('₹', ''));
+                const price = parseInt(item.price.replace('₹', '').replace(' RS', ''));
                 return sum + (price * item.quantity);
             }, 0);
 
-            message += `\n**Total Amount:** ₹${totalAmount}\n\n`;
+            message += `\n*Total Amount:* ₹${totalAmount}\n\n`;
             message += `Thank you!`;
 
             // Encode the message for WhatsApp URL
@@ -1986,23 +2182,23 @@
       `).join('');
         }
 
-        // Filter menu items by category
-        function filterByCategory(category) {
-            if (category === 'all') {
-                renderMenuItems(data);
-            } else {
-                const filteredItems = data.filter(item => item.cat === category);
-                renderMenuItems(filteredItems);
-            }
-        }
-
         // Search functionality
         function searchItems(query) {
-            const filteredItems = data.filter(item =>
+            // Determine which items to search based on current section
+            let itemsToSearch = [];
+            
+            if (currentSection === 'liquor') {
+                itemsToSearch = data.filter(item => liquorCategories.includes(item.cat));
+            } else {
+                itemsToSearch = data.filter(item => foodCategories.includes(item.cat));
+            }
+            
+            const filteredItems = itemsToSearch.filter(item =>
                 item.name.toLowerCase().includes(query.toLowerCase()) ||
                 item.desc.toLowerCase().includes(query.toLowerCase()) ||
                 item.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
             );
+            
             renderMenuItems(filteredItems);
         }
 
@@ -2011,17 +2207,9 @@
             // Set default delivery option
             selectDeliveryOption('restaurant');
 
-            // Render menu items
-            renderMenuItems(data);
-
-            // Tab functionality
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    filterByCategory(tab.dataset.cat);
-                });
-            });
+            // Initialize with food section (default)
+            renderCategoryTabs('food');
+            filterBySection('food');
 
             // Search functionality
             document.getElementById('search').addEventListener('input', (e) => {
